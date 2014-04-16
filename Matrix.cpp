@@ -17,6 +17,8 @@ public:
 	friend ostream &operator<<
 		(ostream &out, const Matrix &m);
 	long &operator()(int x, int y);
+	bool is_square();
+	int det();
 	friend Matrix operator*
 		(const Matrix & m1, const Matrix & m2);
 	friend Matrix operator*
@@ -25,7 +27,7 @@ public:
 		(const Matrix & m1, long c);
 
 private:
-	int dx, dy;  // dimensions, dx by dy 
+	int dx, dy, determ;  // dimensions, dx by dy and determinant 
 	long **p;	// pointer to a pointer to a long integer
 	void allocArrays() {
 		assert(dx>0);
@@ -44,6 +46,33 @@ Matrix::Matrix(int sizeX=1, int sizeY=1)
 		for (int j = 0; j < dy; j++) {
 			p[i][j] = 0;
 		}
+	}
+}
+
+bool Matrix::is_square(){
+		if(dx == dy){
+			cout << "is square" << endl;
+			return true;
+		}
+		else{
+			cout << "not square" << endl;
+			return false;
+		}
+}
+
+int Matrix::det(){
+	if(dy != dx){
+		cout << "matrix must be square" << endl;
+	}
+	if(dy == 2 && dx == 2){
+		determ = (p[0][0] * p[1][1]) - (p[0][1] * p[1][0]);
+		cout << "determinant: " << determ << endl;
+		return determ;
+	}
+	else if(dy == 3 && dx == 3){
+		determ = (p[0][0]*(p[1][1]*p[2][2] - p[1][2]*p[2][1])) - (p[0][1]*(p[1][0]*p[2][2] - p[1][2]*p[2][0])) + (p[0][2]*(p[1][0]*p[2][1] - p[1][1]*p[2][0]));
+		cout << "determinant: " << determ << endl;
+		return determ;
 	}
 }
 
@@ -161,13 +190,20 @@ Matrix operator*(const Matrix& m2, long c) {
 }
 
 int main() {
-	Matrix x(2,1), y(1,2), z(1,1);
+	Matrix x(2,2), y(2,2), z(1,1), b(3,3);
 	x(0,0) = 1;
-	x(1,0) = 2;
+	x(0,1) = 1;
+	x(1,0) = 1;
+	x(1,1) = 1;
 	y(0,0) = 3;
 	y(0,1) = 4;
-	cout << "Matrix x\n" << x << "\nMatrix y\n" << y << "\nMatrix z\n" << z << endl;
+	y(1,0) = 1;
+	y(1,1) = 1;
+	b(0,0) = 2; b(1,0) = 3; b(2,2) = 9; b(2,1) = 5; b(1,1) = 1;
+	cout << "Matrix x\n" << x << "\nMatrix y\n" << y << "\nMatrix b\n" << b << endl;
 	cout << "x*y = \n" << x*y << endl;
+	x.is_square();
+	b.det();
 	z = x*y;
 	cout << "Matrix z = x*y  (note new dimensions)\n" << z << endl;
 	Matrix x2(2,1);
